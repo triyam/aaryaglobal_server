@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+require("dotenv").config({ path: "./.env" });
 
 const sendEmail = (options) => {
   const transporter = nodemailer.createTransport({
@@ -8,13 +9,13 @@ const sendEmail = (options) => {
     // port: 587,
     service: "gmail",
     auth: {
-      user: "email.devtest02@gmail.com",
-      pass: "Testemail123",
+      user: process.env.EMAIL,
+      pass: process.env.PASS,
     },
   });
 
   const mailOptions = {
-    from: "email.devtest02@gmail.com",
+    from: process.env.EMAIL,
     to: options.to,
     subject: options.subject,
     html: options.text,
