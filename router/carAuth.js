@@ -5,26 +5,19 @@ require("../db/conn");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
-const User = require("../model/userSchema");
 const Caruser = require("../model/carUserSchema");
 const authenticate = require("../middleware/authenticate");
 const sendEmail = require("../utils/sendEmail");
-// const cookieParser = require("cookie-parser");
-// router.use(cookieParser) ;
-
-router.get("/", (req, res) => {
-  res.send(`Hello World from the Server in auth.js`);
-});
 
 //using async await
 router.post("/register", async (req, res) => {
-  const { username, email, password, confirmPassword } = req.body;
-  if (!username || !email || !password || !confirmPassword) {
+  const { username, email, password, confirmPassword, service } = req.body;
+  if (!username || !email || !password || !confirmPassword || !service) {
     return res.status(422).json({ error: "Some data fields are missing" });
   }
   console.log("working 1");
   try {
-    const userEmailExists = await User.findOne({ email: email });
+    const userEmailExists = await Caruser.findOne({ email: email });
     // const userphoneExists = await User.findOne({ phone: phone });
 
     if (userEmailExists) {
@@ -38,7 +31,7 @@ router.post("/register", async (req, res) => {
         .status(422)
         .json({ error: "Password is not matching with the Confirm Password" });
     } else {
-      const user = new User({
+      const user = new Caruser({
         username,
         email,
         password,
@@ -56,11 +49,11 @@ router.post("/register", async (req, res) => {
 router.post("/signin", async (req, res) => {
   try {
     let token;
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { email, password, service } = req.body;
+    if (!email || !password || !service) {
       return res.status(400).json({ error: "Empty Credentials!" });
     }
-    const userLogin = await User.findOne({ email: email });
+    const userLogin = await Caruser.findOne({ email: email });
 
     if (userLogin) {
       const passMatch = await bcrypt.compare(password, userLogin.password);
@@ -92,7 +85,7 @@ router.post("/forgotpassword", async (req, res) => {
   const { email } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const user = await Caruser.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ error: " Email don't exist" });
@@ -142,7 +135,7 @@ router.put("/resetpassword/:resetToken", async (req, res) => {
     .digest("hex");
 
   try {
-    const user = await User.findOne({
+    const user = await Caruser.findOne({
       resetPasswordToken,
       resetPasswordExpire: { $gt: Date.now() },
     });
@@ -164,11 +157,5 @@ router.put("/resetpassword/:resetToken", async (req, res) => {
     console.log(error);
   }
 });
-
-//about us page
-// router.get("/about", authenticate, (req, res) => {
-//   // console.log(req.rootUser);
-//   res.status(200).json(req.rootUser);
-// });
 
 module.exports = router;
