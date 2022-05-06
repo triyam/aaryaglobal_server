@@ -15,7 +15,7 @@ router.post("/register", async (req, res) => {
   if (!username || !email || !password || !confirmPassword || !service) {
     return res.status(422).json({ error: "Some data fields are missing" });
   }
-  console.log("working 1");
+  // console.log("working 1");
   try {
     const userEmailExists = await Caruser.findOne({ email: email });
     // const userphoneExists = await User.findOne({ phone: phone });
@@ -25,7 +25,7 @@ router.post("/register", async (req, res) => {
         .status(422)
         .json({ error: "User with this email already exists" });
     }
-    console.log("workinng 2");
+    // console.log("workinng 2");
     if (password != confirmPassword) {
       return res
         .status(422)
