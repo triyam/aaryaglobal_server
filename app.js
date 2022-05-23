@@ -8,7 +8,7 @@ const Router = express.Router()
 const app = express()
 app.use(cors())
 app.use(express.json({ limit: '30mb' }))
-dotenv.config({ path: './config.env' })
+dotenv.config()
 
 require('./db/conn')
 // const User = require('./model/userSchema');
