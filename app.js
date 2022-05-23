@@ -13,8 +13,9 @@ dotenv.config();
 require("./db/conn");
 // const User = require('./model/userSchema');
 app.use(express.json());
-Router.get("/", (req, res) => {
-  res.send(`Hello World from the Server`);
+
+app.get("/", (req, res) => {
+  res.send("Hello World from the Server");
 });
 
 app.use("/user", require("./router/auth"));

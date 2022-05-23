@@ -12,10 +12,6 @@ const sendEmail = require("../utils/sendEmail");
 // const cookieParser = require("cookie-parser");
 // router.use(cookieParser) ;
 
-router.get("/", (req, res) => {
-  res.send(`Hello World from the Server in auth.js`);
-});
-
 //using async await
 router.post("/register", async (req, res) => {
   const { username, email, password, confirmPassword } = req.body;
