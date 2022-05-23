@@ -17,12 +17,15 @@
     "crypto": "^1.0.1",
     "dotenv": "^16.0.0",
     "express": "^4.17.2",
+    "fs": "^0.0.1-security",
+    "image-to-base64": "^2.2.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.2.0",
+    "multer": "^1.4.4",
     "nodemailer": "^6.7.4",
     "two-step-auth": "^1.1.2"
   },
   "devDependencies": {
-    "nodemon": "^2.0.15"
+    "nodemon": "^2.0.16"
   }
 }
