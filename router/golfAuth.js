@@ -95,7 +95,7 @@ router.post("/forgotpassword", async (req, res) => {
 
     await user.save();
 
-    const resetUrl = `http://localhost:3000/golf/resetpassword/${resetToken}`;
+    const resetUrl = `https://aarya-global2.vercel.app/golf/resetpassword/${resetToken}`;
     // console.log(resetUrl);
     const message = `
       <h1>You have requested a password reset </h1>
