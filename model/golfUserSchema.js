@@ -16,6 +16,11 @@ const golfUserSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  verified: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
   service: {
     type: String,
     default: "golf_rental",

@@ -37,6 +37,39 @@ router.post("/register", async (req, res) => {
         password,
       });
       await user.save();
+
+      const userId = await Hoteluser.findOne({ _id: user._id });
+      let token;
+      if (userId) {
+        token = await userId.generateAuthToken();
+      } else {
+        return res
+          .status(422)
+          .json({ error: "User Registration Failed. Retry registering again" });
+      }
+      // console.log(token);
+      const verifyUrl = `https://aarya-global2.vercel.app/hotel/${user._id}/verify/${token}`;
+      const message = `
+        <h1>Email verificatoin </h1>
+        <p>Please verify your email to continue</p>
+        <a href = ${verifyUrl} clicktracking-off> ${verifyUrl}</a>
+      `;
+      try {
+        await sendEmail({
+          to: user.email,
+          subject: "Email verification",
+          text: message,
+        });
+
+        res.status(200).json({
+          success: true,
+          data: "Email verification Sent ",
+        });
+      } catch (error) {
+        // user.verified = false;
+        // await user.save();
+        return res.status(400).json({ error: "Unable to send Email" });
+      }
       res.status(201).json({ message: "User Registered Successfully" });
     }
   } catch (error) {
@@ -155,6 +188,27 @@ router.put("/resetpassword/:resetToken", async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
     console.log(error);
+  }
+});
+
+//email verification
+router.get("/:userid/verify/:token", async (req, res) => {
+  // console.log(req.rootUser);
+  // res.status(200).json(req.rootUser);
+  try {
+    const user = await Hoteluser.findOne({
+      _id: req.params.userid,
+      "tokens.token": req.params.token,
+      verified: false,
+    });
+    console.log(user);
+    if (!user) return res.status(400).send({ message: "Invalid link" });
+    else {
+      await Hoteluser.updateOne({ verified: true });
+      res.status(200).send({ message: "Email verified successfully" });
+    }
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error" });
   }
 });
 

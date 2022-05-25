@@ -20,6 +20,11 @@ const hotelUserSchema = new mongoose.Schema({
     type: String,
     default: "hotel_rental",
   },
+  verified: {
+    type: Boolean,
+    default: false,
+    required: true,
+  },
   tokens: [
     {
       token: {
