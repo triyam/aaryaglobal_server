@@ -42,7 +42,9 @@ router.post(
         }).save()
       } else if (type === 'html') {
         // HTML file upload
-
+        if (!title) {
+          return res.status(422).json({ error: 'title is missing' })
+        }
         const data = fs.readFileSync(req.file.path, 'utf8')
         const blog = await new Blog({
           isSelf: false,
@@ -55,7 +57,7 @@ router.post(
       res.status(500).json({ message: 'Internal Server Error' })
       console.log(error)
     }
-
+    fs.unlinkSync(req.file.path)
     res.status(200).json({ message: 'Succefully posted the blog' })
   }
 )
