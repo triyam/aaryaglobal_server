@@ -62,4 +62,39 @@ router.post(
   }
 )
 
+router.get('/blogs', async (req, res) => {
+  const blogs = {
+    self: [],
+    html: [],
+  }
+  try {
+    const allBlogs = await Blog.find({})
+    allBlogs.forEach((blog) => {
+      if (blog.isSelf === true) {
+        blogs.self.push(blog)
+      } else {
+        blogs.html.push(blog)
+      }
+    })
+  } catch (error) {
+    res.status(500).json({ message: 'Internal Server Error' })
+    console.log(error)
+    return
+  }
+
+  res.status(200).send(blogs)
+})
+
+router.get('/blogs/:blogid', async (req, res) => {
+  let blog = {}
+  try {
+    blog = await Blog.findOne({ _id: req.params.blogid })
+  } catch (error) {
+    res.status(500).json({ message: 'Internal Server Error' })
+    console.log(error)
+    return
+  }
+  res.status(200).send(blog)
+})
+
 module.exports = router
