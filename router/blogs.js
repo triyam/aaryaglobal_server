@@ -6,18 +6,8 @@ const authenticate = require('../middleware/authenticate')
 const imageToBase64 = require('image-to-base64')
 const User = require('../model/userSchema')
 const Blog = require('../model/blogSchema')
-const multer = require('multer')
+const upload = require('../middleware/multer')
 const fs = require('fs')
-
-const storageEngine = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads')
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + '--' + file.originalname)
-  },
-})
-const upload = multer({ storage: storageEngine })
 
 router.post('/blogpost', authenticate, upload.any(), async (req, res) => {
   const base64FormattedImages = []

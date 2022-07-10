@@ -24,6 +24,7 @@ app.use('/car', require('./router/carAuth'))
 app.use('/golf', require('./router/golfAuth'))
 app.use(require('./router/blogs.js'))
 app.use(require('./router/userDetails.js'))
+app.use(require('./router/siteReview'))
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
