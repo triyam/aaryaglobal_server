@@ -9,6 +9,9 @@ const siteReviewSchema = new mongoose.Schema(
     siteName: {
       type: String,
     },
+    location: {
+      type: String,
+    },
     review: {
       type: String,
     },
