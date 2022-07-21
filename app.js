@@ -25,6 +25,7 @@ app.use('/golf', require('./router/golfAuth'))
 app.use(require('./router/blogs.js'))
 app.use(require('./router/userDetails.js'))
 app.use(require('./router/siteReview'))
+app.use(require('./router/banner'))
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
