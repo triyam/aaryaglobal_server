@@ -6,7 +6,20 @@ const cors = require('cors')
 const Router = express.Router()
 
 const app = express()
-app.use(cors())
+const whitelist = ['http://localhost:3000']
+app.options('*', cors())
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true)
+      } else {
+        callback(null, false)
+      }
+    },
+  })
+)
+
 app.use(express.json({ limit: '30mb' }))
 dotenv.config()
 
