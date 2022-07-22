@@ -12,7 +12,12 @@ const app = express()
 //   // methods: "GET, PUT"
 // }
 
-app.use(cors())
+app.use(
+  cors({
+    origin: ['http://localhost:3000', 'https://arya-global-new.vercel.app'],
+    credentials: true,
+  })
+)
 // const whitelist = ['http://localhost:3000']
 // app.options('*', cors())
 // app.use(
