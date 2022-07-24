@@ -6,6 +6,7 @@ const cors = require('cors')
 const Router = express.Router()
 
 const app = express()
+<<<<<<< HEAD
 // var corsOptions = {
 //   origin: 'http://localhost:3000',
 //   optionsSuccessStatus: 200, // For legacy browser support
@@ -31,6 +32,10 @@ app.use(
 //     },
 //   })
 // )
+=======
+
+app.use(cors())
+>>>>>>> poornesh
 
 app.use(express.json({ limit: '30mb' }))
 dotenv.config()
@@ -51,6 +56,7 @@ app.use(require('./router/blogs.js'))
 app.use(require('./router/userDetails.js'))
 app.use(require('./router/siteReview'))
 app.use(require('./router/banner'))
+app.use(require('./router/payment'))
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
