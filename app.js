@@ -6,19 +6,8 @@ const cors = require('cors')
 const Router = express.Router()
 
 const app = express()
-const whitelist = ['http://localhost:3000']
-app.options('*', cors())
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (whitelist.indexOf(origin) !== -1) {
-        callback(null, true)
-      } else {
-        callback(null, false)
-      }
-    },
-  })
-)
+
+app.use(cors())
 
 app.use(express.json({ limit: '30mb' }))
 dotenv.config()
@@ -39,6 +28,7 @@ app.use(require('./router/blogs.js'))
 app.use(require('./router/userDetails.js'))
 app.use(require('./router/siteReview'))
 app.use(require('./router/banner'))
+app.use(require('./router/payment'))
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
