@@ -6,32 +6,8 @@ const cors = require('cors')
 const Router = express.Router()
 
 const app = express()
-app.use(cors());
-// var corsOptions = {
-//   origin: 'http://localhost:3000',
-//   optionsSuccessStatus: 200, // For legacy browser support
-//   // methods: "GET, PUT"
-// }
 
-// app.use(
-//   cors({
-//     origin: ['http://localhost:3000', 'https://arya-global-new.vercel.app'],
-//     credentials: true,
-//   })
-// )
-// const whitelist = ['http://localhost:3000']
-// app.options('*', cors())
-// app.use(
-//   cors({
-//     origin: function (origin, callback) {
-//       if (whitelist.indexOf(origin) !== -1) {
-//         callback(null, true)
-//       } else {
-//         callback(null, false)
-//       }
-//     },
-//   })
-// )
+app.use(cors())
 
 app.use(express.json({ limit: '30mb' }))
 dotenv.config()
@@ -52,6 +28,7 @@ app.use(require('./router/blogs.js'))
 app.use(require('./router/userDetails.js'))
 app.use(require('./router/siteReview'))
 app.use(require('./router/banner'))
+app.use(require('./router/payment'))
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {

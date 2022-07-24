@@ -23,7 +23,9 @@
     "mongoose": "^6.2.0",
     "multer": "^1.4.4",
     "nodemailer": "^6.7.4",
-    "two-step-auth": "^1.1.2"
+    "stripe": "^9.14.0",
+    "two-step-auth": "^1.1.2",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.16"
