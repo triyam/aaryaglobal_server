@@ -9,6 +9,7 @@ router.get('/userDetails', authenticate, async (req, res) => {
   let details = {}
   try {
     details = await User.findOne({ _id: req.userID }).select({
+      _id: 1,
       username: 1,
       email: 1,
     })
