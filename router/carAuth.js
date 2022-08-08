@@ -88,7 +88,7 @@ router.post("/signin", async (req, res) => {
     if (!email || !password || !service) {
       return res.status(400).json({ error: "Empty Credentials!" });
     }
-    const userLogin = await Caruser.findOne({ email: email });
+    const userLogin = await Caruser.findOne({ email: email, service: service });
 
     if (userLogin) {
       const passMatch = await bcrypt.compare(password, userLogin.password);
@@ -101,10 +101,10 @@ router.post("/signin", async (req, res) => {
       });
       // console.log(userLogin.name);
       if (passMatch) {
-        const { _id, name, email } = userLogin;
+        const { _id, username, email, service } = userLogin;
         res.status(201).json({
           token,
-          user: { _id, email, name },
+          user: { _id, email, username, service },
         });
       } else return res.status(400).json({ error: "Invaid Credentials!" });
     } else return res.status(400).json({ error: "Invaid Credentials!" });
