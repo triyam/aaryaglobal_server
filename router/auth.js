@@ -1,6 +1,7 @@
 const { response } = require("express");
 const express = require("express");
 const router = express.Router();
+require('dotenv').config()
 require("../db/conn");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -9,6 +10,7 @@ const User = require("../model/userSchema");
 const Caruser = require("../model/carUserSchema");
 const authenticate = require("../middleware/authenticate");
 const sendEmail = require("../utils/sendEmail");
+const REACTAPP_URL = process.env.REACTAPP_URL
 // const cookieParser = require("cookie-parser");
 // router.use(cookieParser) ;
 
@@ -51,7 +53,7 @@ router.post("/register", async (req, res) => {
           .json({ error: "User Registration Failed. Retry registering again" });
       }
       // console.log(token);
-      const verifyUrl = `https://aarya-global2.vercel.app/user/${user._id}/verify/${token}`;
+      const verifyUrl = `${REACTAPP_URL}/user/${user._id}/verify/${token}`;
       const message = `
         <h1>Email verification </h1>
         <h2>Hello ${user.username} </h2>
@@ -132,7 +134,7 @@ router.post("/forgotpassword", async (req, res) => {
 
     await user.save();
 
-    const resetUrl = `https://aarya-global2.vercel.app/user/resetpassword/${resetToken}`;
+    const resetUrl = `${REACTAPP_URL}/user/resetpassword/${resetToken}`;
     // console.log(resetUrl);
     const message = `
       <h1>You have requested a password reset </h1>
