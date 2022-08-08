@@ -18,7 +18,7 @@ router.post("/register", async (req, res) => {
   if (!username || !email || !password || !confirmPassword) {
     return res.status(422).json({ error: "Some data fields are missing" });
   }
-  console.log("working 1");
+  // console.log("working 1");
   try {
     const userEmailExists = await User.findOne({ email: email });
     // const userphoneExists = await User.findOne({ phone: phone });
@@ -28,7 +28,7 @@ router.post("/register", async (req, res) => {
         .status(422)
         .json({ error: "User with this email already exists" });
     }
-    console.log("workinng 2");
+    // console.log("workinng 2");
     if (password != confirmPassword) {
       return res
         .status(422)
@@ -53,7 +53,8 @@ router.post("/register", async (req, res) => {
       // console.log(token);
       const verifyUrl = `https://aarya-global2.vercel.app/user/${user._id}/verify/${token}`;
       const message = `
-        <h1>Email verificatoin </h1>
+        <h1>Email verification </h1>
+        <h2>Hello ${user.username} </h2>
         <p>Please verify your email to continue</p>
         <a href = ${verifyUrl} clicktracking-off> ${verifyUrl}</a>
       `;
@@ -66,14 +67,14 @@ router.post("/register", async (req, res) => {
 
         res.status(200).json({
           success: true,
-          data: "Email verification Sent ",
+          data: "User Registerd and Email verification sent.",
         });
       } catch (error) {
         // user.verified = false;
         // await user.save();
         return res.status(400).json({ error: "Unable to send Email" });
       }
-      res.status(201).json({ message: "User Registered Successfully" });
+      //res.status(201).json({ message: "User Registered Successfully" });
     }
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });

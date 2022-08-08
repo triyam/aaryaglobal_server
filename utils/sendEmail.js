@@ -7,9 +7,10 @@ const sendEmail = (options) => {
     // port: 993,
     // host: 'smtp.ethereal.email',
     // port: 587,
-    service: "gmail",
+    host: "smtp.mailtrap.io",
+    port: 2525,
     auth: {
-      user: process.env.EMAIL,
+      user: process.env.USER,
       pass: process.env.PASS,
     },
   });
