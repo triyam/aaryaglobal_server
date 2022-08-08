@@ -16,7 +16,7 @@ router.post("/register", async (req, res) => {
   if (!username || !email || !password || !confirmPassword || !service) {
     return res.status(422).json({ error: "Some data fields are missing" });
   }
-  console.log("working 1");
+  // console.log("working 1");
   try {
     const userEmailExists = await Golfuser.findOne({ email: email });
     // const userphoneExists = await User.findOne({ phone: phone });
@@ -26,7 +26,7 @@ router.post("/register", async (req, res) => {
         .status(422)
         .json({ error: "User with this email already exists" });
     }
-    console.log("workinng 2");
+    // console.log("workinng 2");
     if (password != confirmPassword) {
       return res
         .status(422)
@@ -88,7 +88,7 @@ router.post("/signin", async (req, res) => {
     if (!email || !password || !service) {
       return res.status(400).json({ error: "Empty Credentials!" });
     }
-    const userLogin = await Golfuser.findOne({ email: email });
+    const userLogin = await Golfuser.findOne({ email: email, service: service });
 
     if (userLogin) {
       const passMatch = await bcrypt.compare(password, userLogin.password);
@@ -101,10 +101,10 @@ router.post("/signin", async (req, res) => {
       });
       // console.log(userLogin.name);
       if (passMatch) {
-        const { _id, name, email } = userLogin;
+        const { _id, username, email, service } = userLogin;
         res.status(201).json({
           token,
-          user: { _id, email, name },
+          user: { _id, email, username, service },
         });
       } else return res.status(400).json({ error: "Invaid Credentials!" });
     } else return res.status(400).json({ error: "Invaid Credentials!" });
