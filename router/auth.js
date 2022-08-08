@@ -1,7 +1,7 @@
 const { response } = require("express");
 const express = require("express");
 const router = express.Router();
-require('dotenv').config()
+require("dotenv").config();
 require("../db/conn");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
@@ -10,7 +10,7 @@ const User = require("../model/userSchema");
 const Caruser = require("../model/carUserSchema");
 const authenticate = require("../middleware/authenticate");
 const sendEmail = require("../utils/sendEmail");
-const REACTAPP_URL = process.env.REACTAPP_URL
+const REACTAPP_URL = process.env.REACTAPP_URL;
 // const cookieParser = require("cookie-parser");
 // router.use(cookieParser) ;
 
@@ -214,6 +214,49 @@ router.get("/:userid/verify/:token", async (req, res) => {
     }
   } catch (error) {
     res.status(500).send({ message: "Internal Server Error" });
+  }
+});
+
+router.get("/", async (req, res) => {
+  try {
+    const user = await User.find({ status: { $ne: "Blocked" } });
+    console.log(user);
+    if (!user)
+      return res.status(400).send({ message: "No user has registered yet !!" });
+    else {
+      res.status(200).send(user);
+    }
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+});
+
+router.put("/:userid/update", async (req, res) => {
+  const user = await User.findOne({ _id: req.params.userid });
+  if (!user) {
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid User Details !!" });
+  } else {
+    await User.updateOne(
+      { _id: req.params.userid },
+      req.body,
+      function (err, docs) {
+        if (err) {
+          console.log(err);
+          return res.status(500).json({
+            success: false,
+            message: "Something Went Wrong !!",
+          });
+        } else {
+          console.log("Updated Details : ", docs);
+          return res.status(201).json({
+            success: true,
+            message: "User Details Has Been Updated !!",
+          });
+        }
+      }
+    );
   }
 });
 
