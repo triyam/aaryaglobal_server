@@ -220,7 +220,7 @@ router.get("/:userid/verify/:token", async (req, res) => {
 router.get("/", async (req, res) => {
   try {
     const user = await User.find({ status: { $ne: "Blocked" } });
-    console.log(user);
+    // console.log(user);
     if (!user)
       return res.status(400).send({ message: "No user has registered yet !!" });
     else {
@@ -231,8 +231,9 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.put("/:userid/update", async (req, res) => {
+router.post("/:userid/update", async (req, res) => {
   const user = await User.findOne({ _id: req.params.userid });
+  console.log(req.body);
   if (!user) {
     return res
       .status(400)
