@@ -232,32 +232,42 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/:userid/update", async (req, res) => {
-  const user = await User.findOne({ _id: req.params.userid });
-  console.log(req.body);
-  if (!user) {
+  try {
+    const user = await User.findOne({ _id: req.params.userid });
+    console.log(req.body);
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid User Details !!" });
+    } else {
+      await User.updateOne(
+        { _id: req.params.userid },
+        req.body
+        // function (err, docs) {
+        //   if (err) {
+        //     console.log(err);
+        //     return res.status(500).json({
+        //       success: false,
+        //       message: "Something Went Wrong !!",
+        //     });
+        //   } else {
+        //     console.log("Updated Details : ", docs);
+        //     return res.status(201).json({
+        //       success: true,
+        //       message: "User Details Has Been Updated !!",
+        //     });
+        //   }
+        // }
+      );
+      return res.status(201).json({
+        success: true,
+        message: "User Details Has Been Updated !!",
+      });
+    }
+  } catch (error) {
     return res
-      .status(400)
-      .json({ success: false, message: "Invalid User Details !!" });
-  } else {
-    await User.updateOne(
-      { _id: req.params.userid },
-      req.body,
-      function (err, docs) {
-        if (err) {
-          console.log(err);
-          return res.status(500).json({
-            success: false,
-            message: "Something Went Wrong !!",
-          });
-        } else {
-          console.log("Updated Details : ", docs);
-          return res.status(201).json({
-            success: true,
-            message: "User Details Has Been Updated !!",
-          });
-        }
-      }
-    );
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
   }
 });
 
