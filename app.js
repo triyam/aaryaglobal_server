@@ -20,6 +20,7 @@ app.get('/', (req, res) => {
   res.send('Hello World from the Server')
 })
 
+app.use('/admin', require('./router/adminUser'))
 app.use('/user', require('./router/auth'))
 app.use('/hotel', require('./router/hotelAuth'))
 app.use('/car', require('./router/carAuth'))

@@ -103,7 +103,7 @@ router.post("/signin", async (req, res) => {
         const { _id, username, email, service } = userLogin;
         res.status(201).json({
           token,
-          user: { _id, email, username, service },
+          serviceUser: { _id, email, username, service },
         });
       } else return res.status(400).json({ error: "Invaid Credentials!" });
     } else return res.status(400).json({ error: "Invaid Credentials!" });
