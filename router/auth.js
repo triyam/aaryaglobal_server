@@ -1,14 +1,16 @@
-const { response } = require('express')
-const express = require('express')
-const router = express.Router()
-require('../db/conn')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-const crypto = require('crypto')
-const User = require('../model/userSchema')
-const Caruser = require('../model/carUserSchema')
-const authenticate = require('../middleware/authenticate')
-const sendEmail = require('../utils/sendEmail')
+const { response } = require("express");
+const express = require("express");
+const router = express.Router();
+require("dotenv").config();
+require("../db/conn");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const User = require("../model/userSchema");
+const Caruser = require("../model/carUserSchema");
+const authenticate = require("../middleware/authenticate");
+const sendEmail = require("../utils/sendEmail");
+const REACTAPP_URL = process.env.REACTAPP_URL;
 // const cookieParser = require("cookie-parser");
 // router.use(cookieParser) ;
 
@@ -18,7 +20,7 @@ router.post('/register', async (req, res) => {
   if (!username || !email || !password || !confirmPassword) {
     return res.status(422).json({ error: 'Some data fields are missing' })
   }
-  console.log('working 1')
+  // console.log("working 1");
   try {
     const userEmailExists = await User.findOne({ email: email })
     // const userphoneExists = await User.findOne({ phone: phone });
@@ -28,7 +30,7 @@ router.post('/register', async (req, res) => {
         .status(422)
         .json({ error: 'User with this email already exists' })
     }
-    console.log('workinng 2')
+    // console.log("workinng 2");
     if (password != confirmPassword) {
       return res
         .status(422)
@@ -51,9 +53,10 @@ router.post('/register', async (req, res) => {
           .json({ error: 'User Registration Failed. Retry registering again' })
       }
       // console.log(token);
-      const verifyUrl = `https://aarya-global2.vercel.app/user/${user._id}/verify/${token}`
+      const verifyUrl = `${REACTAPP_URL}/user/${user._id}/verify/${token}`;
       const message = `
-        <h1>Email verificatoin </h1>
+        <h1>Email verification </h1>
+        <h2>Hello ${user.username} </h2>
         <p>Please verify your email to continue</p>
         <a href = ${verifyUrl} clicktracking-off> ${verifyUrl}</a>
       `
@@ -66,14 +69,14 @@ router.post('/register', async (req, res) => {
 
         res.status(200).json({
           success: true,
-          data: 'Email verification Sent ',
-        })
+          data: "User Registerd and Email verification sent.",
+        });
       } catch (error) {
         // user.verified = false;
         // await user.save();
         return res.status(400).json({ error: 'Unable to send Email' })
       }
-      res.status(201).json({ message: 'User Registered Successfully' })
+      //res.status(201).json({ message: "User Registered Successfully" });
     }
   } catch (error) {
     res.status(500).json({ message: 'Internal Server Error' })
@@ -131,7 +134,7 @@ router.post('/forgotpassword', async (req, res) => {
 
     await user.save()
 
-    const resetUrl = `https://aarya-global2.vercel.app/user/resetpassword/${resetToken}`
+    const resetUrl = `${REACTAPP_URL}/user/resetpassword/${resetToken}`;
     // console.log(resetUrl);
     const message = `
       <h1>You have requested a password reset </h1>
@@ -214,4 +217,58 @@ router.get('/:userid/verify/:token', async (req, res) => {
   }
 })
 
-module.exports = router
+router.get("/", async (req, res) => {
+  try {
+    const user = await User.find({ status: { $ne: "Blocked" } });
+    // console.log(user);
+    if (!user)
+      return res.status(400).send({ message: "No user has registered yet !!" });
+    else {
+      res.status(200).send(user);
+    }
+  } catch (error) {
+    res.status(500).send({ message: "Internal Server Error" });
+  }
+});
+
+router.post("/:userid/update", async (req, res) => {
+  try {
+    const user = await User.findOne({ _id: req.params.userid });
+    console.log(req.body);
+    if (!user) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid User Details !!" });
+    } else {
+      await User.updateOne(
+        { _id: req.params.userid },
+        req.body
+        // function (err, docs) {
+        //   if (err) {
+        //     console.log(err);
+        //     return res.status(500).json({
+        //       success: false,
+        //       message: "Something Went Wrong !!",
+        //     });
+        //   } else {
+        //     console.log("Updated Details : ", docs);
+        //     return res.status(201).json({
+        //       success: true,
+        //       message: "User Details Has Been Updated !!",
+        //     });
+        //   }
+        // }
+      );
+      return res.status(201).json({
+        success: true,
+        message: "User Details Has Been Updated !!",
+      });
+    }
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal Server Error" });
+  }
+});
+
+module.exports = router;

@@ -1,14 +1,15 @@
-const { response } = require('express')
-const express = require('express')
-const router = express.Router()
-require('../db/conn')
-const bcrypt = require('bcrypt')
-const jwt = require('jsonwebtoken')
-const crypto = require('crypto')
-const Caruser = require('../model/carUserSchema')
-const authenticate = require('../middleware/authenticate')
-const sendEmail = require('../utils/sendEmail')
-
+const { response } = require("express");
+const express = require("express");
+const router = express.Router();
+require("../db/conn");
+require('dotenv').config()
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const Caruser = require("../model/carUserSchema");
+const authenticate = require("../middleware/authenticate");
+const sendEmail = require("../utils/sendEmail");
+const REACTAPP_URL = process.env.REACTAPP_URL
 //using async await
 router.post('/register', async (req, res) => {
   const { username, email, password, confirmPassword, service } = req.body
@@ -48,7 +49,7 @@ router.post('/register', async (req, res) => {
           .json({ error: 'User Registration Failed. Retry registering again' })
       }
       // console.log(token);
-      const verifyUrl = `https://aarya-global2.vercel.app/car/${user._id}/verify/${token}`
+      const verifyUrl = `${REACTAPP_URL}/car/${user._id}/verify/${token}`;
       const message = `
         <h1>Email verificatoin </h1>
         <p>Please verify your email to continue</p>
@@ -87,7 +88,7 @@ router.post('/signin', async (req, res) => {
     if (!email || !password || !service) {
       return res.status(400).json({ error: 'Empty Credentials!' })
     }
-    const userLogin = await Caruser.findOne({ email: email })
+    const userLogin = await Caruser.findOne({ email: email, service: service });
 
     if (userLogin) {
       const passMatch = await bcrypt.compare(password, userLogin.password)
@@ -100,13 +101,13 @@ router.post('/signin', async (req, res) => {
       })
       // console.log(userLogin.name);
       if (passMatch) {
-        const { _id, name, email } = userLogin
+        const { _id, username, email, service } = userLogin;
         res.status(201).json({
           token,
-          user: { _id, email, name },
-        })
-      } else return res.status(400).json({ error: 'Invaid Credentials!' })
-    } else return res.status(400).json({ error: 'Invaid Credentials!' })
+          serviceUser: { _id, email, username, service },
+        });
+      } else return res.status(400).json({ error: "Invaid Credentials!" });
+    } else return res.status(400).json({ error: "Invaid Credentials!" });
   } catch (err) {
     res.status(500).json({ message: 'Internal Server Error' })
     console.log(err)
@@ -129,7 +130,7 @@ router.post('/forgotpassword', async (req, res) => {
 
     await user.save()
 
-    const resetUrl = `https://aarya-global2.vercel.app/car/resetpassword/${resetToken}`
+    const resetUrl = `${REACTAPP_URL}/car/resetpassword/${resetToken}`;
     // console.log(resetUrl);
     const message = `
       <h1>You have requested a password reset </h1>
