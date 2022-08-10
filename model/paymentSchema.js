@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-
 const paymentSchema = new mongoose.Schema(
   {
     user_id: {
@@ -20,6 +19,10 @@ const paymentSchema = new mongoose.Schema(
     },
     serviceName: {
       type: String,
+    },
+
+    serviceId: {
+      type: Number,
     },
     price: {
       type: Number,

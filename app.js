@@ -29,6 +29,7 @@ app.use(require('./router/userDetails.js'))
 app.use(require('./router/siteReview'))
 app.use(require('./router/banner'))
 app.use(require('./router/payment'))
+app.use(require('./router/receipt'))
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {

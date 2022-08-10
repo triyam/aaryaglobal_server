@@ -6,7 +6,9 @@ const authenticate = require('../middleware/authenticate')
 const User = require('../model/userSchema')
 const Payment = require('../model/paymentSchema')
 const { v4: uuidv4 } = require('uuid')
-const { stat } = require('fs')
+const path = require('path')
+const fs = require('fs')
+const PDFDocument = require('pdfkit')
 const stripe = require('stripe')(
   'sk_test_51L5sgiSFNeBq9B3CAW2F5WAvv1dOKtDRg3lQYDZEbcYce7jgFnUyC3325G1O6oJNt3ZvoJKFbuP5xWLO3UySwXf700EukmaaT8'
 )
@@ -59,10 +61,12 @@ router.post('/create-payment-intent', authenticate, async (req, res) => {
 
     res.status(401).send({ message: 'Internal server error' })
   }
+
   const payment = await new Payment({
     user_id: req.userID,
     serviceType: details.type,
     serviceName: details.serviceName,
+    serviceId: details.serviceID,
     userName: details.name,
     email: details.email,
     mobileNo: details.mobileNo,
