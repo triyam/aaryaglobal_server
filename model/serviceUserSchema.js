@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
-const carUserSchema = new mongoose.Schema({
+const serviceUserSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
@@ -18,7 +18,7 @@ const carUserSchema = new mongoose.Schema({
   },
   service: {
     type: String,
-    default: "car_rental",
+    enum: ["Hotel", "Car", "Golf", "Admin"],
   },
   verified: {
     type: Boolean,
@@ -33,11 +33,14 @@ const carUserSchema = new mongoose.Schema({
       },
     },
   ],
+  expireAt: {
+    type: Date,
+  },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
 });
 
-carUserSchema.pre("save", async function (next) {
+serviceUserSchema.pre("save", async function (next) {
   if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 12);
     // this.confirmPassword = await bcrypt.hash(this.confirmPassword, 12);
@@ -46,7 +49,7 @@ carUserSchema.pre("save", async function (next) {
 });
 
 //generating user token
-carUserSchema.methods.generateAuthToken = async function () {
+serviceUserSchema.methods.generateAuthToken = async function () {
   try {
     let token = jwt.sign({ _id: this._id }, process.env.SECRET_KEY);
     this.tokens = this.tokens.concat({ token: token });
@@ -58,7 +61,7 @@ carUserSchema.methods.generateAuthToken = async function () {
 };
 
 //get resetpassword token
-carUserSchema.methods.getResetPasswordToken = function () {
+serviceUserSchema.methods.getResetPasswordToken = function () {
   const resetToken = crypto.randomBytes(20).toString("hex");
 
   this.resetPasswordToken = crypto
@@ -71,6 +74,6 @@ carUserSchema.methods.getResetPasswordToken = function () {
   return resetToken;
 };
 // collection creation
-const Caruser = mongoose.model("CAR", carUserSchema);
+const ServiceUser = mongoose.model("SERVICE", serviceUserSchema);
 
-module.exports = Caruser;
+module.exports = ServiceUser;
